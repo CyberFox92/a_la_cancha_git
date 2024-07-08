@@ -1,0 +1,451 @@
+{% load static %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡A la Cancha!</title>
+    <link type="text/css" rel="stylesheet" href="{% static "estilos.css" %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!--bootstrap--->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/3.6.95/css/materialdesignicons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
+    <!--iconos-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesomefree@6.1.2/css/fontawesome.min.css"
+      integrity="sha384-X8QTME3FCg1DLb58++lPvsjbQoCT9bp3MsUU3grbIny/3ZwUJkRNO8NPW6zqzuW9" crossorigin="anonymous">
+    <!--Favicon-->
+    <link rel="icon" type="image/png" href="{% static 'img/logo_ala_cancha.png' %}">
+    <!--GoogleFont-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet">
+  </head>
+  
+  <body>
+    <section>
+      <header>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{% url 'Index' %}">
+                    <img src="{% static 'img/logo_ala_cancha_con_cancha.png' %}" alt="logo" width="120" height="70">
+                </a>
+                {% if request.user.is_authenticated %}
+                  <h3 class="text-center"> Hola {{ request.user.username }}!</h3>
+                {% endif %}
+        
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"><img
+                      src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2833, 37, 41, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e"></span>
+                </button>
+        
+                <div class="collapse navbar-collapse justify-content-end" id="navbarToggleExternalContent">
+                    <ul class="navbar-nav">
+                        {% if request.user.is_authenticated %}
+                            <a class="nav-link btn-success" href="{% url 'perfil' %}">Perfil</a>
+                            {% if request.user.is_staff %}
+                                <a class="nav-link btn-success" href="{% url 'perfiladmin' %}">Administrar</a>
+                            {% endif %}
+                        {% else %}
+                            <a class="nav-link btn-success" href="{% url 'login' %}">Login/registro</a>                     
+                        {% endif %}
+                            <a class="nav-link btn-success" href="/#sobre-nosotros">Sobre Nosotros</a>
+                            <a class="nav-link btn-success" href="/#nuestras-instalaciones">Nuestras instalaciones</a>
+                            <a class="nav-link btn-success" href="/#precios">Precios</a>                      
+                            <a class="nav-link btn-success" href="/#contacto">Contacto</a>
+                        {% if request.user.is_authenticated %}
+                            <a class="nav-link btn-success" href="{% url 'exit' %}">Cerrar Sesión</a>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+      </header>
+    </section>
+    <section>
+        <div class="espaciador"></div>
+
+      <div class="row">
+        <div class="partes container">
+            <h3>Administracion</h3>
+        </div>
+        {% if messages %}
+        {% for message in messages %}
+        {% if message.tags == 'success' %}
+        <div class="modal fade show" id="mensajeExitoModal" tabindex="-1" role="dialog"
+            aria-labelledby="mensajeExitoModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="mensajeExitoModalLabel">Éxito</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{ message }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            $(document).ready(function () {
+                $('#mensajeExitoModal').modal('show');
+            });
+        </script>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+        <div class="partes container">
+            <h3>Usuarios</h3>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr class="table-secondary">
+                            <th scope="col">Id</th>
+                            <th scope="col">Usuario</th>
+                            <th scope="col">Nombre completo</th>
+                            <th scope="col">Celular</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Editar</th>
+                            <th scope="col">Eliminar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for usuario in todos_usuarios %}
+                        <tr>
+                            <th class="table-secondary" scope="row">{{ usuario.id }}</th>
+                            <td class="table-primary">{{ usuario.username }}</td>
+                            <td class="table-primary">{{ usuario.first_name }} {{ usuario.last_name }}</td>
+                            <td class="table-primary">{{ usuario.perfilusuario.celular }}</td>
+                            <td class="table-primary">{{ usuario.email }}</td>
+                            <td class="table-primary">
+                                <a class="btn btn-info" href="{% url 'editar_usuario' id=usuario.id %}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" fill="white" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                                    </svg>
+                                </a>                                
+                            </td>
+                            
+                            <td class="table-primary">
+                                <a href="#" class="btn btn-danger eliminar-usuario" data-id="{{ usuario.id }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="white" width="1.5em" height="1.5em" viewBox="0 0 16 16">
+                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                        <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                                    </svg>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+      </div>
+      <div class="espaciador"></div>
+
+        <div class="row">
+            <div id="parte_alquileres" class="partes container">
+                <h3>Alquileres</h3>
+            </div>
+            <div class="partes container">
+                <h3>Alquileres Vigentes</h3>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr class="table-secondary">
+                                <th scope="col-flex">Cancha/Salon</th>
+                                <th scope="col">Fecha</th>
+                                <th scope="col">Turno</th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Horas</th>
+                                <th scope="col">Invitados</th>
+                                <th scope="col">Pago</th>
+                                <th scope="col">Editar</th>
+                                <th scope="col">Eliminar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for alquiler in alquileres_vigentes %}
+                            <tr>
+                                <th class="table-secondary" scope="row">
+                                    {% if alquiler.cancha %}
+                                    Cancha: {{ alquiler.cancha.nombre }}
+                                    {% elif alquiler.salon %}
+                                    Salón: {{ alquiler.salon.nombre }}
+                                    {% endif %}
+                                </th>
+                                <td class="table-success">{{ alquiler.fecha_alquiler }}</td>
+                                <td class="table-success">{{ alquiler.turno }}</td>
+                                <td class="table-success">{{ alquiler.usuario.first_name }}</td>
+                                <td class="table-success">
+                                    {% if alquiler.horas_alquiler == None%}
+                                    -
+                                    {% else %}
+                                    {{ alquiler.horas_alquiler }}
+                                    {% endif %}
+                                </td>
+                                <td class="table-success">
+                                    {% if alquiler.cantidad_personas == None%}
+                                    -
+                                    {% else %}
+                                    {{ alquiler.cantidad_personas }}
+                                    {% endif %}
+                                </td>
+                                <td class="table-success">
+                                    {% if alquiler.pago == 0 %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" style='color:red' fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                                    </svg>                                    
+                                    {% else %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" style="color: green;" fill="currentColor" class="bi bi-check2-square" viewBox="0 0 17 17">
+                                        <path d="M3 14.5A1.5 1.5 0 0 1 1.5 13V3A1.5 1.5 0 0 1 3 1.5h8a.5.5 0 0 1 0 1H3a.5.5 0 0 0-.5.5v10a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V8a.5.5 0 0 1 1 0v5a1.5 1.5 0 0 1-1.5 1.5z"/>
+                                        <path d="m8.354 10.354 7-7a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0"/>
+                                    </svg>
+                                    {% endif %}
+                                </td>
+                                <td class="table-success">
+
+                                    {% if alquiler.cantidad_personas == None%}
+                                    <a class="btn btn-info" href="{% url 'editar_cancha' id=alquiler.id %}"><svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" fill="white" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                                    </svg></a>
+                                    {% else %}
+                                    <a class="btn btn-info" href="{% url 'editar_salon' id=alquiler.id %}"><svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" fill="white" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                                    </svg></a>
+                                    {% endif %}
+                                </td>
+                                <td href="#" class="table-success eliminar-alquiler" data-id="{{ alquiler.id }}"><a class="btn btn-danger eliminar-alquiler" data-id="{{ alquiler.id }}"><svg xmlns="http://www.w3.org/2000/svg" fill="white" width="1.5em" height="1.5em" viewBox="0 0 16 16">
+                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                                    </svg>
+                                </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="partes container">
+                <h3>Alquileres Finalizados</h3>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr class="table-secondary">
+                                <th scope="col">Cancha/Salon</th>
+                                <th scope="col">Fecha</th>
+                                <th scope="col">Turno</th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Horas</th>
+                                <th scope="col">Invitados</th>
+                                <th scope="col">Pago</th>
+                                <th scope="col">Editar</th>
+                                <th scope="col">Eliminar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for alquiler in alquileres_finalizados %}
+                            <tr>
+                                <th class="table-secondary" scope="row">
+                                    {% if alquiler.cancha %}
+                                    Cancha: {{ alquiler.cancha.nombre }}
+                                    {% elif alquiler.salon %}
+                                    Salón: {{ alquiler.salon.nombre }}
+                                    {% endif %}
+                                </th>
+                                <td class="table-danger">{{ alquiler.fecha_alquiler }}</td>
+                                <td class="table-danger">{{ alquiler.turno }}</td>
+                                <td class="table-danger">{{ alquiler.usuario.first_name }}</td>
+                                <td class="table-danger">
+                                    {% if alquiler.horas_alquiler == None%}
+                                    -
+                                    {% else %}
+                                    {{ alquiler.horas_alquiler }}
+                                    {% endif %}
+                                </td>
+                                <td class="table-danger">
+                                    {% if alquiler.cantidad_personas == None%}
+                                    -
+                                    {% else %}
+                                    {{ alquiler.cantidad_personas }}
+                                    {% endif %}
+                                </td>
+                                <td class="table-danger">
+                                    {% if alquiler.pago == 0 %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" style='color:red' fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                                    </svg>                                    
+                                    {% else %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" style="color: green;" fill="currentColor" class="bi bi-check2-square" viewBox="0 0 17 17">
+                                        <path d="M3 14.5A1.5 1.5 0 0 1 1.5 13V3A1.5 1.5 0 0 1 3 1.5h8a.5.5 0 0 1 0 1H3a.5.5 0 0 0-.5.5v10a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V8a.5.5 0 0 1 1 0v5a1.5 1.5 0 0 1-1.5 1.5z"/>
+                                        <path d="m8.354 10.354 7-7a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0"/>
+                                    </svg>
+                                    {% endif %}
+                                </td>
+                                <td class="table-danger">
+
+                                    {% if alquiler.cantidad_personas == None%}
+                                    <a class="btn btn-info" href="{% url 'editar_cancha' id=alquiler.id %}"><svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" fill="white" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                                    </svg></a>
+                                    {% else %}
+                                    <a class="btn btn-info" href="{% url 'editar_salon' id=alquiler.id %}"><svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" fill="white" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                                    </svg></a>
+                                    {% endif %}
+                                </td>
+
+                                <td href="#" class="table-danger eliminar-alquiler" data-id="{{ alquiler.id }}"><a class="btn btn-danger eliminar-alquiler" data-id="{{ alquiler.id }}"><svg xmlns="http://www.w3.org/2000/svg" fill="white" width="1.5em" height="1.5em" viewBox="0 0 16 16">
+                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                                    </svg>
+                                </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Modal de Confirmación eliminar alquiler-->
+    <div class="modal fade" id="confirmarModalAlquiler" tabindex="-1" aria-labelledby="confirmarModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmarModalLabel">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Está seguro de que desea cancelar este alquiler?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="confirmarBtn">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal de Confirmación eliminar usuario-->
+    <div class="modal fade" id="confirmarModalUsuario" tabindex="-1" aria-labelledby="confirmarModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmarModalLabel">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Está seguro de que desea eliminar este usuario?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="confirmarBtnUsr">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Escuchamos el clic en los botones con la clase 'eliminar-alquiler'
+        document.querySelectorAll('.eliminar-alquiler').forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.preventDefault(); // Prevenimos el comportamiento por defecto del enlace
+
+                // Obtenemos el ID del alquiler desde el atributo data-id
+                let alquilerId = this.getAttribute('data-id');
+                confirmarEliminar(alquilerId); // Llamamos a la función para confirmar la eliminación
+            });
+        });
+
+        function confirmarEliminar(id) {
+            // Mostrar el modal de confirmación
+            $('#confirmarModalAlquiler').modal('show');
+
+            // Configurar el evento de clic para el botón de confirmación en el modal
+            $('#confirmarBtn').off('click').on('click', function () {
+                eliminarAlquiler(id);
+            });
+        }
+
+        function eliminarAlquiler(id) {
+            fetch(`/eliminar-alquiler/${id}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                }
+            }).then(response => {
+                if (response.ok) {
+                    $('#confirmarModalAlquiler').modal('hide'); // Ocultar el modal después de eliminar
+                    location.reload(); // Recargar la página después de eliminar el alquiler
+                }
+            });
+        }
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Escuchar clic en los botones con la clase 'eliminar-usuario'
+        document.querySelectorAll('.eliminar-usuario').forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.preventDefault(); // Prevenir comportamiento predeterminado del enlace
+
+                // Obtener ID del usuario desde el atributo data-id
+                let usuarioId = this.getAttribute('data-id');
+                confirmarEliminar(usuarioId); // Llamar función para confirmar eliminación
+            });
+        });
+
+        function confirmarEliminar(id) {
+            // Mostrar el modal de confirmación
+            $('#confirmarModalUsuario').modal('show');
+
+            // Configurar evento de clic para el botón "Eliminar" en el modal
+            $('#confirmarBtnUsr').off('click').on('click', function () {
+                eliminarUsuario(id);
+            });
+        }
+
+        function eliminarUsuario(id) {
+            fetch(`/eliminar-usuario/${id}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    $('#confirmarModalUsuario').modal('hide'); // Ocultar modal después de eliminar
+                    location.reload(); // Recargar la página después de eliminar el usuario
+                }
+            }).catch(error => {
+                console.error('Error al eliminar usuario:', error);
+                // Manejar el error según sea necesario
+            });
+        }
+    });
+</script>
+
+</html>

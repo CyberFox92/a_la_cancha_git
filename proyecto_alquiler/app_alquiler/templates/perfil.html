@@ -1,0 +1,259 @@
+{% load static %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡A la Cancha!</title>
+    <link type="text/css" rel="stylesheet" href="{% static "estilos.css" %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!--bootstrap--->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/3.6.95/css/materialdesignicons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
+    <!--iconos-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesomefree@6.1.2/css/fontawesome.min.css"
+      integrity="sha384-X8QTME3FCg1DLb58++lPvsjbQoCT9bp3MsUU3grbIny/3ZwUJkRNO8NPW6zqzuW9" crossorigin="anonymous">
+    <!--Favicon-->
+    <link rel="icon" type="image/png" href="{% static 'img/logo_ala_cancha.png' %}">
+    <!--GoogleFont-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet">
+  </head>
+  
+  <body>
+    <section>
+      <header>
+        <nav class="navbar navbar-expand-lg">
+          <div class="container-fluid">
+              <a class="navbar-brand" href="{% url 'Index' %}">
+                  <img src="{% static 'img/logo_ala_cancha_con_cancha.png' %}" alt="logo" width="120" height="70">
+              </a>
+              {% if request.user.is_authenticated %}
+                <h3 class="text-center"> Hola {{ request.user.username }}!</h3>
+              {% endif %}
+      
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                      data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent"
+                      aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"><img
+                    src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2833, 37, 41, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e"></span>
+              </button>
+      
+              <div class="collapse navbar-collapse justify-content-end" id="navbarToggleExternalContent">
+                  <ul class="navbar-nav">
+                    {% if request.user.is_authenticated %}
+                        <a class="nav-link btn-success" href="{% url 'perfil' %}">Perfil</a>
+                      {% if request.user.is_staff %}
+                          <a class="nav-link btn-success" href="{% url 'perfiladmin' %}">Administrar</a>
+                      {% endif %}
+                    {% else %}
+                        <a class="nav-link btn-success" href="{% url 'login' %}">Login/registro</a>                     
+                    {% endif %}
+                        <a class="nav-link btn-success" href="/#sobre-nosotros">Sobre Nosotros</a>
+                        <a class="nav-link btn-success" href="/#nuestras-instalaciones">Nuestras instalaciones</a>
+                        <a class="nav-link btn-success" href="/#precios">Precios</a>                      
+                        <a class="nav-link btn-success" href="/#contacto">Contacto</a>
+                    {% if request.user.is_authenticated %}
+                        <a class="nav-link btn-success" href="{% url 'exit' %}">Cerrar Sesión</a>
+                    {% endif %}
+                  </ul>
+              </div>
+          </div>
+      </nav>
+      </header>
+    </section>
+  <div class="espaciador"></div>
+  <section>
+    <div class="contenedor_perfil container">
+        <div class="columna_1 container">
+            <div class="row">
+                <div class="espaciador"></div>
+                <div id="parte_perfil" class="partes container">
+                    <h3>Perfil</h3>
+                </div>
+                <div class="partes container">
+                    <div>
+                        <img src="https://img.icons8.com/bubbles/100/000000/user.png" width="300" height="300" class="img-radius" alt="User-Profile-Image">
+                        <h4>{{ request.user.username }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="espaciador"></div>
+                <div id="parte_informacion" class="partes container">
+                    <h3>Informacion</h3>
+                </div>
+                <div class="partes container">
+                    <div class="card-block">
+                        <div class="row">
+                            <div class="col-sm-6 partes container">
+                                <h6 class="m-b-10 f-w-600 fw-bold ">Nombre</h6>
+                                <h5>{{ request.user.first_name }}</h5>
+                            </div>
+                            <div class="col-sm-6 partes container">
+                                <h6 class="m-b-10 f-w-600 fw-bold">Apellido</h6>
+                                <h5 class="">{{ request.user.last_name }}</h5>
+                            </div>
+                            <div class="partes container">
+                                <h6 class="m-b-10 f-w-600 fw-bold">Celular</h6>
+                                <h5>{{ request.user.perfilusuario.celular }}</h5>
+                            </div>
+                         </div>
+                        <div class="row" >
+                          <div class="partes container">
+                              <h6 class="m-b-10 f-w-600 fw-bold">Email</h6>
+                              <h5>{{ request.user.email }}</h>
+                          </div>
+                        </div>
+                        <div class="row">
+                            
+                        </div>                        
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="columna_2 container">
+            <div class="row">
+                <div class="espaciador"></div>
+                <div id="parte_alquileres" class="partes container">
+                    <h3>Alquileres</h3>
+                    <a class="text-decoration-none" href="{% url 'alquiler' %}"><button class="nav-link btn btn-info">Alquilar</button></a>
+                </div>
+                
+                <div class="partes container">
+                  <h3>Alquileres Vigentes</h3>
+        <ul>
+            {% for alquiler in alquileres_vigentes %}
+                <li class="partes container row">
+                  <div><h4>{{ alquiler.fecha_alquiler }}</h4></div>
+                    <div class="col">
+                      <div>
+                        {% if alquiler.cancha %}
+                        <div>Cancha: {{ alquiler.cancha.nombre }}</div>
+                        <div>Horas: {{ alquiler.horas_alquiler}}</div>
+
+                        {% elif alquiler.salon %}
+                          <div>Salón: {{ alquiler.salon.nombre }}</div>
+                          <div> Invitados: {{ alquiler.cantidad_personas}}</div>
+                                          
+                        {% endif %}
+                      </div>
+                      <div>Turno: {{ alquiler.get_turno_display }}</div>                      
+                      <div>Precio: ${{ alquiler.costo }}</div>
+                    </div>
+                    <div class="iconos-alquileres justify-content-center align-content-center col">
+                      <a href="#" style="text-decoration:none" class="btn btn-danger eliminar-alquiler" data-id="{{ alquiler.id }}"><svg xmlns="http://www.w3.org/2000/svg" fill="white" width="2em" height="2em" viewBox="0 0 16 16">
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                        </svg>
+                      </a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+        </div>
+        <div class="partes container">
+          <h3>Alquileres Finalizados</h3>
+          <ul>
+              {% for alquiler in alquileres_finalizados|slice:":5" %}
+                  <li class="partes container row">
+                    <div><h4>{{ alquiler.fecha_alquiler }}</h4></div>
+                    <div class="col">
+                      <div>
+                        {% if alquiler.cancha %}
+                          <div>Cancha: {{ alquiler.cancha.nombre }}</div>
+                          <div>Horas: {{ alquiler.horas_alquiler}}</div>
+
+                        {% elif alquiler.salon %}
+                          <div>Salón: {{ alquiler.salon.nombre }}</div>
+                          <div> Invitados: {{ alquiler.cantidad_personas}}</div>
+                                          
+                        {% endif %}
+                      </div>
+                      <div>Turno: {{ alquiler.get_turno_display }}</div>                      
+                      <div>Precio: ${{ alquiler.costo }}</div>
+                    </div>
+                      <div class="iconos-alquileres justify-content-center align-content-center col">
+                        <a href="#" style="text-decoration:none" class="btn btn-danger eliminar-alquiler" data-id="{{ alquiler.id }}"><svg xmlns="http://www.w3.org/2000/svg" fill="white" width="2em" height="2em" viewBox="0 0 16 16">
+                              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                              <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                          </svg>
+                        </a>
+                      </div>
+                  </li>
+              {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Modal de Confirmación -->
+<div class="modal fade" id="confirmarModal" tabindex="-1" aria-labelledby="confirmarModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="confirmarModalLabel">Confirmar Eliminación</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <p>¿Está seguro de que desea cancelar este alquiler?</p>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-danger" id="confirmarBtn">Eliminar</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // Escuchamos el clic en los botones con la clase 'eliminar-alquiler'
+      document.querySelectorAll('.eliminar-alquiler').forEach(button => {
+          button.addEventListener('click', function(event) {
+              event.preventDefault(); // Prevenimos el comportamiento por defecto del enlace
+
+              // Obtenemos el ID del alquiler desde el atributo data-id
+              let alquilerId = this.getAttribute('data-id');
+              confirmarEliminar(alquilerId); // Llamamos a la función para confirmar la eliminación
+          });
+      });
+
+      function confirmarEliminar(id) {
+          // Mostrar el modal de confirmación
+          $('#confirmarModal').modal('show');
+
+          // Configurar el evento de clic para el botón de confirmación en el modal
+          $('#confirmarBtn').off('click').on('click', function() {
+              eliminarAlquiler(id);
+          });
+      }
+
+      function eliminarAlquiler(id) {
+          fetch(`/eliminar-alquiler/${id}/`, {
+              method: 'POST',
+              headers: {
+                  'X-CSRFToken': '{{ csrf_token }}',
+              }
+          }).then(response => {
+              if (response.ok) {
+                  $('#confirmarModal').modal('hide'); // Ocultar el modal después de eliminar
+                  location.reload(); // Recargar la página después de eliminar el alquiler
+              }
+          });
+      }
+  });
+</script>
+</html>
